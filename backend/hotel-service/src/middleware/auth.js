@@ -37,13 +37,15 @@ function authenticateOptional(req, res, next) {
 async function requireAdmin(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Giriş gerekli' });
 
+  console.log('[admin] Checking user_id:', req.user.id);
   const { data, error } = await supabase
     .from('hotel_admins')
-    .select('id')
-    .eq('user_id', req.user.id)
-    .single();
+    .select('id, user_id')
+    .eq('user_id', req.user.id);
 
-  if (error || !data) return res.status(403).json({ error: 'Admin yetkisi gerekli' });
+  console.log('[admin] Query result - data:', JSON.stringify(data), 'error:', error ? error.message : 'none');
+
+  if (error || !data || data.length === 0) return res.status(403).json({ error: 'Admin yetkisi gerekli' });
 
   next();
 }
