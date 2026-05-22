@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
@@ -5,26 +6,25 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-async function authenticate(req, res, next) {
+function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ error: 'Token gerekli' });
 
   const token = authHeader.replace('Bearer ', '');
-  const { data: { user }, error } = await supabase.auth.getUser(token);
+  const decoded = jwt.decode(token);
+  if (!decoded || !decoded.sub) return res.status(401).json({ error: 'Geçersiz token' });
 
-  if (error || !user) return res.status(401).json({ error: 'Geçersiz token' });
-
-  req.user = user;
+  req.user = { id: decoded.sub, email: decoded.email };
   next();
 }
 
-async function authenticateOptional(req, res, next) {
+function authenticateOptional(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) return next();
 
   const token = authHeader.replace('Bearer ', '');
-  const { data: { user } } = await supabase.auth.getUser(token);
-  req.user = user || null;
+  const decoded = jwt.decode(token);
+  req.user = (decoded && decoded.sub) ? { id: decoded.sub, email: decoded.email } : null;
   next();
 }
 
