@@ -7,11 +7,17 @@ const supabase = createClient(
 );
 
 function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  console.log('[auth] Header:', authHeader ? authHeader.substring(0, 30) + '...' : 'YOK');
+
   if (!authHeader) return res.status(401).json({ error: 'Token gerekli' });
 
-  const token = authHeader.replace('Bearer ', '');
+  const token = authHeader.replace(/^Bearer\s+/i, '');
+  console.log('[auth] Token length:', token.length);
+
   const decoded = jwt.decode(token);
+  console.log('[auth] Decoded:', decoded ? `sub=${decoded.sub}, email=${decoded.email}` : 'NULL');
+
   if (!decoded || !decoded.sub) return res.status(401).json({ error: 'Geçersiz token' });
 
   req.user = { id: decoded.sub, email: decoded.email };
@@ -19,10 +25,10 @@ function authenticate(req, res, next) {
 }
 
 function authenticateOptional(req, res, next) {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization || req.headers.Authorization;
   if (!authHeader) return next();
 
-  const token = authHeader.replace('Bearer ', '');
+  const token = authHeader.replace(/^Bearer\s+/i, '');
   const decoded = jwt.decode(token);
   req.user = (decoded && decoded.sub) ? { id: decoded.sub, email: decoded.email } : null;
   next();
