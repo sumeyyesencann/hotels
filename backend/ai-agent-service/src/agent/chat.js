@@ -32,9 +32,11 @@ async function callTool(name, args, userToken) {
 }
 
 async function runChat(messages, userToken) {
+  const today = new Date().toISOString().split('T')[0];
   const systemMessage = {
     role: 'system',
     content: `Sen bir otel rezervasyon asistanısın. Kullanıcıların otel aramasına ve rezervasyon yapmasına yardım ediyorsun.
+    Bugünün tarihi: ${today}. Kullanıcı yıl belirtmeden tarih söylerse (örn: "7 temmuz"), bu yılı veya gelecekteki en yakın tarihi kullan.
     Arama sonuçlarını net ve anlaşılır şekilde listele. Rezervasyon onayı iste. Türkçe yanıt ver.`
   };
 
