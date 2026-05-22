@@ -1,0 +1,11 @@
+{
+  "name": "hotels-root",
+  "version": "1.0.0",
+  "scripts": {
+    "install:all": "npm install --prefix backend/gateway && npm install --prefix backend/hotel-service && npm install --prefix backend/comments-service && npm install --prefix backend/notification-service && npm install --prefix backend/ai-agent-service && npm install --prefix frontend",
+    "dev": "concurrently \"npm run dev --prefix backend/hotel-service\" \"npm run dev --prefix backend/comments-service\" \"npm run dev --prefix backend/ai-agent-service\" \"npm run dev --prefix backend/notification-service\" \"npm run dev --prefix backend/gateway\" \"npm run dev --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
