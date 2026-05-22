@@ -24,8 +24,7 @@ Hotels.com benzeri bir otel rezervasyon sistemi. Microservice mimarisi, REST API
 ---
 
 ## Demo Video
-
-[YouTube Demo Linki — eklenecek]
+https://drive.google.com/file/d/1AjNCaEubr7IJ70wSi_i9nv2QTUzyemr5/view?usp=sharing
 
 ---
 
